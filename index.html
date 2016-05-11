@@ -1,0 +1,172 @@
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, user-scalable=no" />
+  <title>Slideshows</title>
+  <meta name="description" content="Slideshows - use without ?feed or with ?feed=nunl , ?feed=twitterbolcom , ?feed=bolpuntcom , ?feed=bolcomsales">
+  <link rel="stylesheet" type="text/css" href="css/slideshow.css?321323492242" media="all" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700" type="text/css" />
+  <link rel="stylesheet" href="css/font-face.min.css" type="text/css" media="all" />
+
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.1/underscore-min.js"></script>
+  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"></script>
+  <script type="text/javascript" src="js/backbone-viewstate-min.js?4232933233454"></script>
+  <script type="text/javascript" src="js/twitter.js?49334234"></script>
+  <script type="text/javascript" src="js/data.js?34923234"></script>
+  <script type="text/javascript" src="js/app.js?34394"></script>
+  <script type="text/javascript" src="js/Store.js?423239233454"></script>
+  <script type="text/javascript" src="js/views/slideshow.js?423239233454"></script>
+  <script>
+    $(function () {
+
+      function getQueryParams(qs) {
+        qs = qs.split('+').join(' ');
+
+        var params = {};
+        var tokens;
+        var re = /[?&]?([^=]+)=([^&]*)/g;
+
+        while (tokens = re.exec(qs)) {
+          params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
+        }
+
+        return params;
+      }
+
+      var query = getQueryParams(document.location.search);
+      if (jQuery.isEmptyObject(query)) query = {
+        feed: 'twitter',
+      };
+
+      if (query.feed === 'twitter') {
+        var handle = 'twitter';
+        var url = 'http://derkbraakman.com/php/twitterAPI.php';
+      } else if (query.feed === 'twitterbolcom') {
+        var handle = 'twitter';
+        var url = 'http://derkbraakman.com/php/twitterAPI.php?list=bol-com-bedrijfsaccounts';
+      } else if (query.feed === 'bolpuntcom') {
+        var handle = 'bolcom';
+        var url = 'http://derkbraakman.com/php/bolcomAPI.php';
+      } else if (query.feed === 'bolpuntcomsales') {
+        var handle = 'bolcom';
+        var url = 'http://derkbraakman.com/php/bolcomAPI.php?sort=rankasc';
+      } else if (query.feed === 'nunl') {
+        var handle = 'nunl';
+        var url = 'http://derkbraakman.com/cache/nuinbeeld.php';
+      } else {
+        var handle = 'twitter';
+        var url = 'http://derkbraakman.com/php/twitterAPI.php';
+      }
+
+      loadData(handle, url, query);
+
+    });
+  </script>
+
+  <script id="twitter-template" type="text/x-handlebars-template">
+    <div class="slide animate in" data-id="{{ id }}">
+      <div class="tw">
+        <div class="post">
+          <div class="image-holder">
+            <a href="{{ tweetUrl }}" target="_blank"><img src="{{ profileImage }}" id="profile" class="img img-rounded"></a>
+          </div>
+          <div class="name">
+            <div class="username">
+              <h1><a href="{{ tweetUrl }}" target="_blank"><span class="text-name">{{ userName }}</span></a></h1></div>
+            <div class="at">@<span class="text-at">{{ screenName }}</span></div>
+          </div>
+          <div class="logo">
+            <img src="images/twitter.svg" width="42">
+          </div>
+          <div class="follow">
+            <img src="images/profile_dropdown.jpg" width="42" height="30" alt="profile">
+            <a href="{{ followUrl }}" target="_blank"><img src="images/follow_no.jpg" width="86" height="30" alt="Follow" id="follow-img"></a>
+          </div>
+          <div class="clear"></div>
+          <div class="message">
+            <span class="text-message">{{{ text }}}</span>
+          </div>
+          <ul class="options">
+            <li><img src="images/reply.jpg" width="22" height="15"> <a href="{{ replyUrl }}" target="_blank"><span class="text-reply">Reply</span></a></li>
+            <li><img src="images/retweet.jpg" width="22" height="15"> <a href="{{ retweetUrl }}" target="_blank"><span class="text-retweet">Retweet</span></a></li>
+            <li><img src="images/favorite.jpg" width="22" height="15"> <a href="{{ likeUrl }}" target="_blank"><span class="text-favorite">Like</span></a></li>
+            <li><img src="images/more.jpg" width="22" height="15"> <a href="{{ tweetUrl }}" target="_blank"><span class="text-more">More</span></a></li>
+          </ul>
+          <div class="date">
+            <a href="{{ tweetUrl }}" target="_blank"><span class="text-date">{{ date }}</span></a>
+          </div>
+        </div>
+        {{#if picture}}
+        <div>
+          <img src="{{ picture }}" class="extended-media">
+        </div>
+        {{/if}}
+      </div>
+    </div>
+  </script>
+
+  <script id="bolcom-template" type="text/x-handlebars-template">
+    <div class="slide animate in" data-id="{{ id }}">
+      <div class="tw">
+        <div class="post">
+          <div class="left">
+            <a target="_blank" href="https://www.bol.com/nl/p/-/{{ globalid }}/"><img src="{{ thumbnailurl }}" class="img-thumb"></a>
+          </div>
+          <div class="left__block">
+            <div class="title">
+              <h2>{{title}}</h2>
+              <div class="logo">
+                <img src="images/bolcom.svg" width="81">
+              </div>
+            </div>
+            <div class="subtitle">
+              <div class="category">Categorie: {{category}}</div>
+              {{#if seller}}
+                <div class="seller">Verkoper: {{seller}}</div>
+              {{/if}}
+              <div class="price"><span>&euro; {{price}}</span><span class="price-fraction">,{{pricefraction}}</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </script>
+
+  <script id="nunl-template" type="text/x-handlebars-template">
+    <div class="slide animate in" data-id="{{ id }}">
+      <div class="nunl">
+        <div class="tw">
+          <img src="{{ images.large }}">
+          <div class="description">
+          {{ description }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </script>
+
+</head>
+
+<body>
+  <div class="template-holder"></div>
+  <div class="backdrop twitter">
+    <div class="tw">
+      <img src="images/twitter_white.svg" class="svg">
+    </div>
+  </div>
+  <div class="backdrop bolcom">
+    <div class="tw">
+      <img src="images/bolcom_white.svg" class="svg">
+    </div>
+  </div>
+  <div class="backdrop nunl">
+    <div class="tw">
+      <img src="images/nunl.svg" class="svg">
+    </div>
+  </div>
+</body>
+
+</html>
