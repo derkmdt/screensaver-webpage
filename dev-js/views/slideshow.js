@@ -1,4 +1,4 @@
-(function (_, Backbone) {
+(function (_, Backbone, Swipe) {
   // the meat of the logic, defines the slideshow, hooks into existing dom elements representing slides and controls
   // handles events and timing, play, pause, jumpto
 
@@ -8,14 +8,25 @@
       this.timeSet = options.timeSet;
       this.templateName = options.templateName;
 
+      this.render();
+
       this.listenTo(APP.Store.getState(), 'change:activeIndex', this.slide);
 
-      this.binds();
-
-      var randomIndex = (Math.floor(Math.random() * APP.Store.getSlideCollection().length - 1))
+      var randomIndex = (Math.floor(Math.random() * this.collection.length - 1))
       APP.Store.getState().set('activeIndex', randomIndex);
+      console.log(randomIndex);
 
-      this.timerSlide();
+      var elem = document.getElementById('mySwipe');
+      window.mySwipe = Swipe(elem, {
+        startSlide: randomIndex,
+        auto: 8000,
+        callback: function(index, elem) {
+          console.log(index);
+          APP.Store.getState().set('activeIndex', index);
+        },
+      });
+
+      this.binds();
     },
 
     binds: function() {
@@ -23,34 +34,17 @@
       $(document).on('keydown', this.keyDown);
     },
 
-    timerSlide: function () {
-      this.interval = window.setInterval(function () {
-        var currentActiveIndex = APP.Store.getState().get('activeIndex');
-        currentActiveIndex++;
-        APP.Store.getState().set('activeIndex', currentActiveIndex);
-      }, this.timeSet);
-    },
-
-    stopTimerSlide: function() {
-      window.clearInterval(this.interval);
-    },
-
     keyDown: function (ev) {
-      var currentActiveIndex = APP.Store.getState().get('activeIndex');
       switch (ev.keyCode) {
         case 37:
-          this.stopTimerSlide();
-          currentActiveIndex--;
-          APP.Store.getState().set('activeIndex', currentActiveIndex);
+          window.mySwipe.prev()
           break;
         case 38:
           this.stopTimerSlide();
           // this.activeSource--;
           break;
         case 39:
-          this.stopTimerSlide();
-          currentActiveIndex++;
-          APP.Store.getState().set('activeIndex', currentActiveIndex);
+          window.mySwipe.next()
           break;
         case 40:
           this.stopTimerSlide();
@@ -63,7 +57,7 @@
       var next;
       var prev;
       var active = APP.Store.getState().get('activeIndex');
-      var slidesLenght = APP.Store.getSlideCollection().length;
+      var slidesLenght = this.collection.length;
 
       if (active === slidesLenght) {
         active = 0;
@@ -87,41 +81,47 @@
       }
 
       var prevEl = this.$el.find('[data-id="' + prev + '"]');
-      if(prevEl.length === 0) {
-        this.render(prev);
-        prevEl = this.$el.find('[data-id="' + prev + '"]');
+      if(!this.collection.get(prev).get('dataSet')) {
+        this.addContentToTemplate(prevEl, prev);
+        this.collection.get(prev).set('dataSet', true);
       }
 
       var activeEl = this.$el.find('[data-id="' + active + '"]');
-      if(activeEl.length === 0) {
-        this.render(active);
-        activeEl = this.$el.find('[data-id="' + active + '"]');
+      if(!this.collection.get(active).get('dataSet')) {
+        this.addContentToTemplate(activeEl, active);
+        this.collection.get(active).set('dataSet', true);
       }
 
       var nextEl = this.$el.find('[data-id="' + next + '"]');
-      if(nextEl.length === 0) {
-        this.render(next);
-        nextEl = this.$el.find('[data-id="' + next + '"]');
+      if(!this.collection.get(next).get('dataSet')) {
+        this.addContentToTemplate(nextEl, next);
+        this.collection.get(next).set('dataSet', true);
       }
 
-      prevEl.attr('class', 'slide animate out');
-      activeEl.attr('class', 'slide active');
-      nextEl.attr('class', 'slide animate in');
     },
 
     getTemplateData: function(slidenr) {
-      var data = APP.Store.getSlideCollection().get(slidenr);
+      var data = this.collection.get(slidenr);
       return data.toJSON();
     },
 
-    render: function (slidenr) {
-      var slidesLenght = APP.Store.getSlideCollection().length;
+    addContentToTemplate: function(el, slidenr) {
       var source = $(this.templateName).html();
       this.template = Handlebars.compile(source);
-      this.$el.append(this.template(this.getTemplateData(slidenr)));
+      el.append(this.template(this.getTemplateData(slidenr)));
+    },
+
+    render: function () {
+      var source = $('#placeholder-template').html();
+      this.template = Handlebars.compile(source);
+
+      this.collection.each(function(model) {
+          this.$el.append(this.template(model.toJSON()));
+      }, this);
+
       return this;
     },
 
   });
 
-})(this._, this.Backbone);
+})(this._, Backbone, Swipe);

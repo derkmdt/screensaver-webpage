@@ -10,6 +10,7 @@ APP.Store = (function (_, Backbone) {
   return {
     start: function(dataJson) {
       slideCollection.reset(dataJson);
+      slideCollection.invoke('set', {'dataSet': false});
     },
 
     getState: function() {
