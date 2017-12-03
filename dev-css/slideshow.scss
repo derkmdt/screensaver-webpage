@@ -31,8 +31,8 @@ a {
   overflow: hidden;
   visibility: hidden;
   position: relative;
-  width: 100vw;
-  height: 100vh;
+  // width: 100vw;
+  // height: 100vh;
 }
 .swipe-wrap {
   overflow: hidden;
@@ -247,6 +247,7 @@ a {
   display: none;
 }
 
+// twitter
 .twitter {
   background: #55acee;
 }
@@ -258,9 +259,11 @@ a {
 .backdrop .tw .svg {
   width: 100%;
   max-width: 100%;
+  display: block;
 }
 .twitter .tw .svg {
   background: #55acee;
+  display: block;
 }
 .visible {
   display: block;
@@ -280,10 +283,11 @@ a {
     transform: scale3d(.5,.5,8);
   }
   100% {
-    transform: scale3d(50,50,8);
+    transform: scale3d(50,50,8) translate(0%, -20%);
   }
 }
 
+//bolcom
 .bolcom {
   background: #36C;
 }
@@ -294,7 +298,26 @@ a {
 
 .bolcom .tw .svg {
   background: #36C;
+  display: block;
 }
+
+.bolcomreclames .tw {
+  width: 100%;
+}
+
+// bolcomreclames
+.bolcomreclames {
+  background: #000;
+}
+
+.bolcomreclames .youtube-player {
+  width: 100% !important;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+// nunl
 .nunl {
   position: absolute;
   height: 100%;

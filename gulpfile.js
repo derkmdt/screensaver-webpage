@@ -34,14 +34,17 @@ gulp.task('js', function() {
     'dev-js/backbone-viewstate.js',
     'dev-js/Store.js',
     'dev-js/twitter.js',
+    'dev-js/youtube.js',
     'dev-js/bolcom.js',
-    'dev-js/data.js',
     'dev-js/views/slideshow.js',
+    'dev-js/data.js',
     'dev-js/**/*.js'
   ]))
   .pipe(sourcemaps.init())
   .pipe(concat('screensaver.js'))
-  .pipe(uglify())
+  .pipe(uglify().on('error', function(e){
+      console.log(e);
+   }))
   .pipe(rename({suffix: '.min'}))
   .pipe(sourcemaps.write())
   .pipe(gulp.dest('js'));
@@ -60,17 +63,17 @@ gulp.task('watch', function () {
     port: 3000,
     open: false,
     notify: true,
-    injectChanges: false,
+    injectChanges: false
   });
 
   // Watch HTML and SASS files
   gulp.watch([
       '*.html',
       'dev-css/**/*.scss',
-      'dev-js/**/*.js',
+      'dev-js/**/*.js'
     ],
     [
-      'default',
+      'default'
     ]
   ).on('change', browserSync.reload);
 });

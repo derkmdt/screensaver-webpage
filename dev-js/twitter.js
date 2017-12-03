@@ -36,26 +36,26 @@ function distanceOfTimeInWords(fromTime, toTime, includeSeconds) {
     return (Math.round(distanceInMinutes / 43200)) + ' maanden geleden';
   else
     return (Math.round(distanceInMinutes / 525600)) + ' jaren geleden';
-}
+};
 
 //Twitter Parsers
 String.prototype.parseURL = function () {
-  return this.replace(/[A-Za-z]+:\/\/[A-Za-z0-9-_]+\.[A-Za-z0-9-_:%&~\?\/.=]+/g, function (url) {
-    return url.link(url);
+  return this.replace(/[A-Za-z]+:\/\/[A-Za-z0-9-_]+\.[A-Za-z0-9-_:%&~\?\/.=]+/g, function (u) {
+    return u.link(u).openUrlBlank();
   });
 };
 
 String.prototype.parseUsername = function () {
-  return this.replace(/[@]+[A-Za-z0-9-_]+/g, function (u) {
-    var username = u.replace('@', '');
-    return u.link('https://twitter.com/' + username);
+  return this.replace(/ [@]+[A-Za-z0-9-_]+/g, function (u) {
+    var username = u.replace(' @', '');
+    return u.link('https://twitter.com/' + username).openUrlBlank();
   });
 };
 
 String.prototype.parseHashtag = function () {
-  return this.replace(/[#]+[A-Za-z0-9-_]+/g, function (t) {
-    var tag = t.replace('#', '%23');
-    return t.link('https://twitter.com/search?q=' + tag);
+  return this.replace(/ [#]+[A-Za-z0-9-_]+/g, function (t) {
+    var tag = t.replace(' #', '%23');
+    return t.link('https://twitter.com/search?q=' + tag).openUrlBlank();
   });
 };
 
@@ -65,22 +65,28 @@ String.prototype.parseDate = function () {
   return date;
 };
 
+String.prototype.openUrlBlank = function () {
+  return this.replace(/^<a/, '$& target="_blank"');
+}
+
 function processTweets(data, unique) {
   var tweets = [];
   $.each(data, function (i, obj) {
     var element = obj;
-    element.text = obj.text.parseURL().parseUsername().parseHashtag();
-    var created = obj.created.parseDate();
+    if(!element.hasExternalUrl) {
+      obj.text = obj.text.parseURL();
+    }
+    element.text = obj.text.parseUsername().parseHashtag();
+    var created = element.created.parseDate();
     delete element.created;
     var now = new Date();
     element.date = distanceOfTimeInWords(now, created, true) + ' geplaatst';
-    element.tweetUrl = 'https://twitter.com/-/status/' + obj.tweetId;
-    element.retweetUrl = 'https://twitter.com/intent/retweet?tweet_id=' + obj.tweetId;
-    element.replyUrl = 'https://twitter.com/intent/tweet?in_reply_to=' + obj.tweetId;
-    element.likeUrl = 'https://twitter.com/intent/like?tweet_id=' + obj.tweetId;
-    element.followUrl = 'https://twitter.com/intent/follow?screen_name=' + obj.screenName;
+    element.tweetUrl = 'https://twitter.com/-/status/' + element.tweetId;
+    element.retweetUrl = 'https://twitter.com/intent/retweet?tweet_id=' + element.tweetId;
+    element.replyUrl = 'https://twitter.com/intent/tweet?in_reply_to=' + element.tweetId;
+    element.likeUrl = 'https://twitter.com/intent/like?tweet_id=' + element.tweetId;
+    element.followUrl = 'https://twitter.com/intent/follow?screen_name=' + element.screenName;
     tweets.push(element);
   });
-
   return tweets;
-}
+};

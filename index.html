@@ -35,24 +35,24 @@
         feed: 'twitter',
       };
 
-      if (query.feed === 'twitter') {
+      if (query.feed === 'twitterbolcom') {
         var handle = 'twitter';
-        var url = 'http://derkbraakman.com/php/twitterAPI.php';
-      } else if (query.feed === 'twitterbolcom') {
-        var handle = 'twitter';
-        var url = 'http://derkbraakman.com/php/twitterAPI.php?list=bol-com-bedrijfsaccounts';
-      } else if (query.feed === 'bolpuntcom') {
+        var url = 'http://derkbraakman.com/cache/twitterEmployees.json';
+      } else if (query.feed === 'bolpuntcomprice') {
         var handle = 'bolcom';
-        var url = 'http://derkbraakman.com/php/bolcomAPI.php';
+        var url = 'http://www.derkbraakman.com/cache/bolcomPrice.json';
       } else if (query.feed === 'bolpuntcomsales') {
         var handle = 'bolcom';
-        var url = 'http://derkbraakman.com/php/bolcomAPI.php?sort=rankasc';
+        var url = 'http://www.derkbraakman.com/cache/bolcomSales.json';
       } else if (query.feed === 'nunl') {
         var handle = 'nunl';
-        var url = 'http://derkbraakman.com/cache/nuinbeeld.php';
+        var url = 'http://derkbraakman.com/cache/nuinbeeld.json';
+      } else if (query.feed === 'bolcomreclames') {
+        var handle = 'bolcomreclames';
+        var url = 'http://www.derkbraakman.com/cache/bolcomreclames.json';
       } else {
         var handle = 'twitter';
-        var url = 'http://derkbraakman.com/php/twitterAPI.php';
+        var url = 'http://derkbraakman.com/cache/twitter.json';
       }
 
       loadData(handle, url, query);
@@ -64,7 +64,7 @@
     <div class="tw">
       <div class="post">
         <div class="image-holder">
-          <a href="{{ tweetUrl }}" target="_blank"><img src="{{ profileImage }}" id="profile" class="img img-rounded"></a>
+          <a href="{{ tweetUrl }}" target="_blank"><img src="{{ profileImage }}" id="profile" class="img img-rounded" alt="Profile image @{{ screenName }}"></a>
         </div>
         <div class="name">
           <div class="username">
@@ -104,7 +104,7 @@
     <div class="tw">
       <div class="post">
         <div class="left">
-          <a target="_blank" href="https://www.bol.com/nl/p/-/{{ globalid }}/"><img src="{{ thumbnailurl }}" class="img-thumb"></a>
+          <a target="_blank" href="https://www.bol.com/nl/p/-/{{ globalid }}/"><img src="{{ thumbnailurl }}" class="img-thumb" alt="{{title}}"></a>
         </div>
         <div class="left__block">
           <div class="title">
@@ -128,9 +128,19 @@
   <script id="nunl-template" type="text/x-handlebars-template">
     <div class="nunl">
       <div class="tw">
-        <img src="{{ images.large }}">
+        <img src="{{ images.large }}" alt="{{ description }}">
         <div class="description">
         {{ description }}
+        </div>
+      </div>
+    </div>
+  </script>
+
+  <script id="bolcomreclames-template" type="text/x-handlebars-template">
+    <div class="bolcomreclames">
+      <div class="tw">
+        <div class="embed-container">
+          <div id="youtube-player{{id}}" class="youtube-player"></div>
         </div>
       </div>
     </div>
@@ -152,6 +162,11 @@
     </div>
   </div>
   <div class="backdrop bolcom">
+    <div class="tw">
+      <img src="images/bolcom_white.svg" class="svg">
+    </div>
+  </div>
+  <div class="backdrop bolcomreclames">
     <div class="tw">
       <img src="images/bolcom_white.svg" class="svg">
     </div>

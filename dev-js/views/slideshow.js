@@ -7,24 +7,24 @@
     initialize: function (options) {
       this.timeSet = options.timeSet;
       this.templateName = options.templateName;
+      this.handle = options.handle;
 
       this.render();
 
       this.listenTo(APP.Store.getState(), 'change:activeIndex', this.slide);
-
       var randomIndex = (Math.floor(Math.random() * this.collection.length - 1))
       APP.Store.getState().set('activeIndex', randomIndex);
-      console.log(randomIndex);
 
       var elem = document.getElementById('mySwipe');
       window.mySwipe = Swipe(elem, {
         startSlide: randomIndex,
-        auto: 8000,
+        auto: this.timeSet,
         callback: function(index, elem) {
-          console.log(index);
+          console.log('callback');
           APP.Store.getState().set('activeIndex', index);
-        },
+        }
       });
+      // APP.YouTube.youtubePlayer[40].playVideo();
 
       this.binds();
     },
@@ -41,14 +41,12 @@
           break;
         case 38:
           this.stopTimerSlide();
-          // this.activeSource--;
           break;
         case 39:
           window.mySwipe.next()
           break;
         case 40:
           this.stopTimerSlide();
-          // this.activeSource--;
           break;
       }
     },
@@ -83,18 +81,27 @@
       var prevEl = this.$el.find('[data-id="' + prev + '"]');
       if(!this.collection.get(prev).get('dataSet')) {
         this.addContentToTemplate(prevEl, prev);
+        if(this.handle === 'bolcomreclames') {
+          addPlayer(prev, this.collection.get(prev).get('url'));
+        }
         this.collection.get(prev).set('dataSet', true);
       }
 
       var activeEl = this.$el.find('[data-id="' + active + '"]');
       if(!this.collection.get(active).get('dataSet')) {
         this.addContentToTemplate(activeEl, active);
+        if(this.handle === 'bolcomreclames') {
+          addPlayer(active, this.collection.get(active).get('url'));
+        }
         this.collection.get(active).set('dataSet', true);
       }
 
       var nextEl = this.$el.find('[data-id="' + next + '"]');
       if(!this.collection.get(next).get('dataSet')) {
         this.addContentToTemplate(nextEl, next);
+        if(this.handle === 'bolcomreclames') {
+          addPlayer(next, this.collection.get(next).get('url'));
+        }
         this.collection.get(next).set('dataSet', true);
       }
 
@@ -114,7 +121,6 @@
     render: function () {
       var source = $('#placeholder-template').html();
       this.template = Handlebars.compile(source);
-
       this.collection.each(function(model) {
           this.$el.append(this.template(model.toJSON()));
       }, this);

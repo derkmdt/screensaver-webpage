@@ -1,3 +1,5 @@
-function processBolcomProducts() {
-  
-}
+(function () {
+  function processBolcomProducts() {
+
+  };
+})
