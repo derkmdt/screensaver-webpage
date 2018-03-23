@@ -1,9 +1,14 @@
 {
-  "name": "Sass BrowserSync Minify and Autoprefix Gulp Script",
-  "version": "0.0.3",
+  "name": "BuildProcess",
+  "description": "Contains all sass files and build process.",
+  "version": "0.0.4",
+  "scripts": {
+    "build": "gulp",
+    "watch": "gulp watch"
+  },
   "devDependencies": {
     "browser-sync": "^2.18.12",
-    "gulp": "^3.9.1",
+    "gulp": "3.9.1",
     "gulp-autoprefixer": "^4.0.0",
     "gulp-concat": "^2.6.1",
     "gulp-minify-css": "^1.2.4",
