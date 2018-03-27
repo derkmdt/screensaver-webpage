@@ -15,6 +15,12 @@
   <script type="text/javascript" src="js/screensaver.min.js?4232933233454"></script>
   <script>
     $(function () {
+      var FADE_DELAY = 10000,
+        FADE_DUR = 500,
+        idleTimeout,
+        template,
+        activeCategory,
+        url;
 
       function getQueryParams(qs) {
         qs = qs.split('+').join(' ');
@@ -31,31 +37,79 @@
       }
 
       var query = getQueryParams(document.location.search);
-      if (jQuery.isEmptyObject(query)) query = {
-        feed: 'twitter',
-      };
 
       if (query.feed === 'twitterbolcom') {
-        var handle = 'twitter';
-        var url = 'http://derkbraakman.com/cache/twitterEmployees.json';
+        template = 'twitter';
+        url = 'http://derkbraakman.com/cache/twitterEmployees.json';
       } else if (query.feed === 'bolpuntcomprice') {
-        var handle = 'bolcom';
-        var url = 'http://www.derkbraakman.com/cache/bolcomPrice.json';
+        template = 'bolcom';
+        url = 'http://www.derkbraakman.com/cache/bolcomPrice.json';
       } else if (query.feed === 'bolpuntcomsales') {
-        var handle = 'bolcom';
-        var url = 'http://www.derkbraakman.com/cache/bolcomSales.json';
+        template = 'bolcom';
+        url = 'http://www.derkbraakman.com/cache/bolcomSales.json';
       } else if (query.feed === 'nunl') {
-        var handle = 'nunl';
-        var url = 'http://derkbraakman.com/cache/nuinbeeld.json';
+        template = 'nunl';
+        url = 'http://derkbraakman.com/cache/nuinbeeld.json';
       } else if (query.feed === 'bolcomreclames') {
-        var handle = 'bolcomreclames';
-        var url = 'http://www.derkbraakman.com/cache/bolcomreclames.json';
+        template = 'bolcomreclames';
+        url = 'http://www.derkbraakman.com/cache/bolcomreclames.json';
       } else {
-        var handle = 'twitter';
-        var url = 'http://derkbraakman.com/cache/twitter.json';
+        query.feed = 'twitter';
+        template = 'twitter';
+        url = 'http://derkbraakman.com/cache/twitter.json';
+      }
+      activeCategory = query.feed;
+      setCategory();
+
+      loadData(template, url, query);
+
+      // Idle fade
+      resetIdleTimeout();
+      $(document.body).mousemove(function() {
+        console.log('mouseover');
+        $('.idleable').fadeIn();
+        resetIdleTimeout();
+      });
+
+      var $categorySelect = $('#category-select');
+      $('#category').prepend($categorySelect);
+
+      // Alphabetize select.
+      var items = $categorySelect.children('option.sort').get();
+      items.sort(function(a, b) {
+        var compA = $(a).text().toUpperCase();
+        var compB = $(b).text().toUpperCase();
+        return (compA < compB) ? -1 : (compA > compB) ? 1 : 0;
+      });
+      $.each(items, function(k, v) {
+        $categorySelect.append(v);
+      });
+
+      $categorySelect.change(function() {
+        template = $(this).val();
+        setCategory();
+        updateURL();
+      });
+
+      function setCategory() {
+        $selected = $("#category-select option[value='" + activeCategory + "']");
+        $("#category-select").val(activeCategory);
+        $("#category span").html($selected.html());
+      };
+
+      function resetIdleTimeout() {
+        clearTimeout(idleTimeout);
+        idleTimeout = setTimeout(function() {
+          $('.idleable').fadeOut(FADE_DUR);
+        }, FADE_DELAY);
       }
 
-      loadData(handle, url, query);
+      function updateURL() {
+        var str = []
+        str.push('feed=');
+        str.push(template);
+        window.location = '?' + str.join('');
+      }
 
     });
   </script>
@@ -153,6 +207,17 @@
 </head>
 
 <body>
+  <div id="container">
+    <div id="desc" class="idleable">Switch slideshow to <div id="category"><span>Twitter bol.com</span></div></div>
+    <select id="category-select">
+      <option value="twitter">Twitter bol.com</option>
+      <option value="twitterbolcom" class="sort">Twitter bol.com employees</option>
+      <option value="bolpuntcomprice" class="sort">bol.com High prices</option>
+      <option value="bolpuntcomsales" class="sort">bol.com Populair products</option>
+      <option value="bolcomreclames" class="sort">bol.com commercials</option>
+      <option value="nunl" class="sort">Nu.nl Nu in beeld</option>
+    </select>
+  </div>
   <div id="mySwipe" class="swipe">
     <div class="swipe-wrap template-holder"></div>
   </div>
