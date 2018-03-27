@@ -11,7 +11,7 @@ var sourcemaps = require('gulp-sourcemaps');
 
 // SASS
 gulp.task('sass', function () {
-  return gulp.src('dev-css/**/*.scss')
+  return gulp.src('css/**/*.scss')
     .pipe(sourcemaps.init())
     .pipe(sass().on('error', sass.logError))
     .pipe(autoprefixer({
@@ -22,13 +22,13 @@ gulp.task('sass', function () {
     .pipe(minifyCSS())
     .pipe(rename({suffix: '.min'}))
     .pipe(sourcemaps.write())
-    .pipe(gulp.dest('css'))
+    .pipe(gulp.dest('dist'))
     .pipe(browserSync.stream());
 });
 
 // Concatenate & Minify JS
 gulp.task('js', function() {
-  return gulp.src('dev-js/**/*.js')
+  return gulp.src('js/**/*.js')
   .pipe(order([
     'dev-js/app.js',
     'dev-js/backbone-viewstate.js',
@@ -47,7 +47,7 @@ gulp.task('js', function() {
    }))
   .pipe(rename({suffix: '.min'}))
   .pipe(sourcemaps.write())
-  .pipe(gulp.dest('js'));
+  .pipe(gulp.dest('dist'));
 });
 
 // default gulp task
@@ -63,14 +63,15 @@ gulp.task('watch', function () {
     port: 3000,
     open: false,
     notify: true,
-    injectChanges: false
+    injectChanges: false,
+    open: "local"
   });
 
   // Watch HTML and SASS files
   gulp.watch([
       '*.html',
-      'dev-css/**/*.scss',
-      'dev-js/**/*.js'
+      'css/**/*.scss',
+      'js/**/*.js'
     ],
     [
       'default'

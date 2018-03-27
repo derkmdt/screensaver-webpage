@@ -4,7 +4,7 @@
   <meta name="viewport" content="width=device-width, user-scalable=no" />
   <title>Slideshows</title>
   <meta name="description" content="Slideshows - use without ?feed or with ?feed=nunl , ?feed=twitterbolcom , ?feed=bolpuntcom , ?feed=bolcomsales">
-  <link rel="stylesheet" type="text/css" href="css/screensaver.min.css?3223323492242" media="all" />
+  <link rel="stylesheet" type="text/css" href="dist/screensaver.min.css?3223323492242" media="all" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700" type="text/css" />
 
 
@@ -12,7 +12,7 @@
   <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
   <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.1/underscore-min.js"></script>
   <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"></script>
-  <script type="text/javascript" src="js/screensaver.min.js?4232933233454"></script>
+  <script type="text/javascript" src="dist/screensaver.min.js?4232933233454"></script>
   <script>
     $(function () {
       var FADE_DELAY = 10000,
@@ -147,9 +147,9 @@
         </div>
       </div>
       {{#if picture}}
-      <div>
-        <img src="{{ picture }}" class="extended-media">
-      </div>
+        <a href="{{ tweetUrl }}" target="_blank">
+          <img src="{{ picture }}" class="extended-media">
+        </a>
       {{/if}}
     </div>
   </script>
@@ -162,7 +162,7 @@
         </div>
         <div class="left__block">
           <div class="title">
-            <h2>{{title}}</h2>
+            <a target="_blank" href="https://www.bol.com/nl/p/-/{{ globalid }}/"><h2>{{title}}</h2></a>
             <div class="logo">
               <img src="images/bolcom.svg" width="81">
             </div>
