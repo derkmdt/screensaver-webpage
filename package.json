@@ -1,7 +1,7 @@
 {
   "name": "BuildProcess",
   "description": "Contains all sass files and build process.",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "scripts": {
     "build": "gulp",
     "watch": "gulp watch"

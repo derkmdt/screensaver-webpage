@@ -65,7 +65,7 @@
 
       // Idle fade
       resetIdleTimeout();
-      $(document.body).mousemove(function() {
+      $(document.body).mousemove(function () {
         console.log('mouseover');
         $('.idleable').fadeIn();
         resetIdleTimeout();
@@ -76,16 +76,16 @@
 
       // Alphabetize select.
       var items = $categorySelect.children('option.sort').get();
-      items.sort(function(a, b) {
+      items.sort(function (a, b) {
         var compA = $(a).text().toUpperCase();
         var compB = $(b).text().toUpperCase();
         return (compA < compB) ? -1 : (compA > compB) ? 1 : 0;
       });
-      $.each(items, function(k, v) {
+      $.each(items, function (k, v) {
         $categorySelect.append(v);
       });
 
-      $categorySelect.change(function() {
+      $categorySelect.change(function () {
         template = $(this).val();
         setCategory();
         updateURL();
@@ -99,7 +99,7 @@
 
       function resetIdleTimeout() {
         clearTimeout(idleTimeout);
-        idleTimeout = setTimeout(function() {
+        idleTimeout = setTimeout(function () {
           $('.idleable').fadeOut(FADE_DUR);
         }, FADE_DELAY);
       }
@@ -208,7 +208,8 @@
 
 <body>
   <div id="container">
-    <div id="desc" class="idleable">Switch slideshow to <div id="category"><span>Twitter bol.com</span></div></div>
+    <div id="desc" class="idleable">Switch slideshow to <div id="category"><span>Twitter bol.com</span></div>
+    </div>
     <select id="category-select">
       <option value="twitter">Twitter bol.com</option>
       <option value="twitterbolcom" class="sort">Twitter bol.com employees</option>
