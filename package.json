@@ -9,6 +9,7 @@
     "sass": "gulp sass"
   },
   "devDependencies": {
+<<<<<<< HEAD
     "gulp": "^4.0.2",
     "gulp-autoprefixer": "^7.0.1",
     "gulp-clean-css": "^4.3.0",
@@ -19,6 +20,18 @@
     "gulp-sourcemaps": "^1.12.1",
     "gulp-uglify": "^3.0.2",
     "node-sass": "^4.14.1"
+=======
+    "browser-sync": "2.26.3",
+    "gulp": "4.0.0",
+    "gulp-autoprefixer": "4.0.0",
+    "gulp-concat": "2.6.1",
+    "gulp-minify-css": "1.2.4",
+    "gulp-order": "1.2.0",
+    "gulp-rename": "1.4.0",
+    "gulp-sass": "4.0.2",
+    "gulp-sourcemaps": "2.6.0",
+    "gulp-uglify": "3.0.1"
+>>>>>>> 8ed8fc6a79259e86bb3e7f4df03844bbbc080cbf
   },
   "repository": {
     "type": "git",
