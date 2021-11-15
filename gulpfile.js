@@ -3,7 +3,7 @@ const uglify = require('gulp-uglify');
 const rename = require('gulp-rename');
 const sourcemaps = require('gulp-sourcemaps');
 const concat = require('gulp-concat');
-const sass = require('gulp-sass');
+const sass = require('gulp-sass')(require('sass'));
 const order = require("gulp-order");
 const cleanCSS = require('gulp-clean-css');
 
