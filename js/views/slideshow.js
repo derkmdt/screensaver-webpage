@@ -20,7 +20,6 @@
         startSlide: randomIndex,
         auto: this.timeSet,
         callback: function(index, elem) {
-          console.log('callback');
           APP.Store.getState().set('activeIndex', index);
         }
       });
@@ -37,12 +36,14 @@
     keyDown: function (ev) {
       switch (ev.keyCode) {
         case 37:
+        case 75:
           window.mySwipe.prev()
           break;
         case 38:
           this.stopTimerSlide();
           break;
         case 39:
+        case 74:
           window.mySwipe.next()
           break;
         case 40:
@@ -80,6 +81,7 @@
 
       var prevEl = this.$el.find('[data-id="' + prev + '"]');
       if(!this.collection.get(prev).get('dataSet')) {
+        console.log('prev', prev);
         this.addContentToTemplate(prevEl, prev);
         if(this.handle === 'bolcomreclames') {
           addPlayer(prev, this.collection.get(prev).get('url'));
@@ -89,6 +91,7 @@
 
       var activeEl = this.$el.find('[data-id="' + active + '"]');
       if(!this.collection.get(active).get('dataSet')) {
+        console.log('active', active);
         this.addContentToTemplate(activeEl, active);
         if(this.handle === 'bolcomreclames') {
           addPlayer(active, this.collection.get(active).get('url'));
@@ -98,13 +101,20 @@
 
       var nextEl = this.$el.find('[data-id="' + next + '"]');
       if(!this.collection.get(next).get('dataSet')) {
+        console.log('next', next);
         this.addContentToTemplate(nextEl, next);
         if(this.handle === 'bolcomreclames') {
           addPlayer(next, this.collection.get(next).get('url'));
         }
         this.collection.get(next).set('dataSet', true);
       }
-
+      
+      if(this.handle === 'bolcomreclames') {
+        // console.log(APP.YouTube.youtubePlayer[active]);
+        // APP.YouTube.youtubePlayer[prev].stopVideo();
+        // APP.YouTube.youtubePlayer[next].stopVideo();
+        // APP.YouTube.youtubePlayer[active].playVideo();
+      }
     },
 
     getTemplateData: function(slidenr) {

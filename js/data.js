@@ -8,12 +8,12 @@ function loadData(handle, dataUrl, query) {
       if (typeof response.errors === 'undefined' || response.errors.length < 1) {
         var data;
         var timeSet = 8000;
-        if (query.feed.indexOf('bolpuntcom') != -1) {
+        if (query.feed.indexOf('price') != -1 || query.feed.indexOf('sales') != -1) {
           data = response.products;
-        } else if(query.feed.indexOf('bolcomreclames') != -1) {
+        } else if(query.feed.indexOf('reclames') != -1) {
           data = response;
           timeSet = 0;
-        } else if(query.feed.indexOf('nunl') != -1) {
+        } else if(query.feed.indexOf('nos') != -1) {
           data = response;
         } else {
           data = processTweets(response);

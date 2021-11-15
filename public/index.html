@@ -3,19 +3,32 @@
 <head>
   <meta name="viewport" content="width=device-width, user-scalable=no" />
   <title>Slideshows</title>
-  <meta name="description" content="Slideshows - use without ?feed or with ?feed=nunl , ?feed=twitterbolcom , ?feed=bolpuntcom , ?feed=bolcomsales">
+  <meta name="description"
+    content="Slideshows - use without ?feed or with ?feed=nunl , ?feed=twitterEmployees , ?feed=price , ?feed=sales , ?feed=reclames">
   <link rel="stylesheet" type="text/css" href="dist/screensaver.min.css?3223323492242" media="all" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700" type="text/css" />
-
+  <link rel="preload" as="font" href="webfonts/Graphik-Semibold-Web.woff2" type="font/woff2">
+  <link rel="preload" as="font" href="webfonts/Graphik-Regular-Web.woff2" type="font/woff2">
+  <link rel="preload" as="font" href="webfonts/Produkt-Bold-Web.woff2" type="font/woff2">
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
-  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.1/underscore-min.js"></script>
-  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js">
+  </script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.1/underscore-min.js">
+  </script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js">
+  </script>
   <script type="text/javascript" src="dist/screensaver.min.js?4232933233454"></script>
   <script>
     $(function () {
-      var FADE_DELAY = 10000,
+      //remove touchmove from safari browser so no rubber webpage scrolling happens
+      document.addEventListener('touchmove', function (e) {
+        e.preventDefault();
+      }, {
+        passive: false
+      });
+
+      var FADE_DELAY = 3000,
         FADE_DUR = 500,
         idleTimeout,
         template,
@@ -37,26 +50,27 @@
       }
 
       var query = getQueryParams(document.location.search);
+      var domainPath = 'https://derkbraakman.com/cache/';
 
-      if (query.feed === 'twitterbolcom') {
+      if (query.feed === 'twitterEmployees') {
         template = 'twitter';
-        url = 'http://derkbraakman.com/cache/twitterEmployees.json';
-      } else if (query.feed === 'bolpuntcomprice') {
+        url = domainPath + 'twitterEmployees.json';
+      } else if (query.feed === 'price') {
         template = 'bolcom';
-        url = 'http://www.derkbraakman.com/cache/bolcomPrice.json';
-      } else if (query.feed === 'bolpuntcomsales') {
+        url = domainPath + 'bolcomPrice.json';
+      } else if (query.feed === 'sales') {
         template = 'bolcom';
-        url = 'http://www.derkbraakman.com/cache/bolcomSales.json';
-      } else if (query.feed === 'nunl') {
-        template = 'nunl';
-        url = 'http://derkbraakman.com/cache/nuinbeeld.json';
-      } else if (query.feed === 'bolcomreclames') {
+        url = domainPath + 'bolcomSales.json';
+      } else if (query.feed === 'nos') {
+        template = 'nos';
+        url = domainPath + 'nos.json';
+      } else if (query.feed === 'reclames') {
         template = 'bolcomreclames';
-        url = 'http://www.derkbraakman.com/cache/bolcomreclames.json';
+        url = domainPath + 'bolcomreclames.json';
       } else {
         query.feed = 'twitter';
         template = 'twitter';
-        url = 'http://derkbraakman.com/cache/twitter.json';
+        url = domainPath + 'twitter.json';
       }
       activeCategory = query.feed;
       setCategory();
@@ -65,8 +79,7 @@
 
       // Idle fade
       resetIdleTimeout();
-      $(document.body).mousemove(function() {
-        console.log('mouseover');
+      $(document.body).mousemove(function () {
         $('.idleable').fadeIn();
         resetIdleTimeout();
       });
@@ -76,16 +89,16 @@
 
       // Alphabetize select.
       var items = $categorySelect.children('option.sort').get();
-      items.sort(function(a, b) {
+      items.sort(function (a, b) {
         var compA = $(a).text().toUpperCase();
         var compB = $(b).text().toUpperCase();
         return (compA < compB) ? -1 : (compA > compB) ? 1 : 0;
       });
-      $.each(items, function(k, v) {
+      $.each(items, function (k, v) {
         $categorySelect.append(v);
       });
 
-      $categorySelect.change(function() {
+      $categorySelect.change(function () {
         template = $(this).val();
         setCategory();
         updateURL();
@@ -99,7 +112,7 @@
 
       function resetIdleTimeout() {
         clearTimeout(idleTimeout);
-        idleTimeout = setTimeout(function() {
+        idleTimeout = setTimeout(function () {
           $('.idleable').fadeOut(FADE_DUR);
         }, FADE_DELAY);
       }
@@ -115,15 +128,18 @@
   </script>
 
   <script id="twitter-template" type="text/x-handlebars-template">
-    <div class="tw">
+    <div class="twittertemplate tw">
       <div class="post">
-        <div class="image-holder">
-          <a href="{{ tweetUrl }}" target="_blank"><img src="{{ profileImage }}" id="profile" class="img img-rounded" alt="Profile image @{{ screenName }}"></a>
-        </div>
-        <div class="name">
-          <div class="username">
-            <h1><a href="{{ tweetUrl }}" target="_blank"><span class="text-name">{{ userName }}</span></a></h1></div>
-          <div class="at">@<span class="text-at">{{ screenName }}</span></div>
+        <div class="account">
+          <div class="image-holder">
+            <a href="{{ followUrl }}" target="_blank"><img src="{{ profileImage }}" id="profile" class="img img-rounded" alt="Profile image @{{ screenName }}"></a>
+          </div>
+          <div class="name">
+            <a href="{{ followUrl }}" target="_blank">
+              <div class="username"><h1><span class="text-name"></span>{{ userName }}</span></h1></div>
+              <div class="at">@<span class="text-at">{{ screenName }}</span></div>
+            </a>
+          </div>
         </div>
         <div class="logo">
           <img src="images/twitter.svg" width="42">
@@ -132,7 +148,6 @@
           <img src="images/profile_dropdown.jpg" width="42" height="30" alt="profile">
           <a href="{{ followUrl }}" target="_blank"><img src="images/follow_no.jpg" width="86" height="30" alt="Follow" id="follow-img"></a>
         </div>
-        <div class="clear"></div>
         <div class="message">
           <span class="text-message">{{{ text }}}</span>
         </div>
@@ -155,19 +170,19 @@
   </script>
 
   <script id="bolcom-template" type="text/x-handlebars-template">
-    <div class="tw">
+    <div class="bolcomtemplate tw">
       <div class="post">
         <div class="left">
           <a target="_blank" href="https://www.bol.com/nl/p/-/{{ globalid }}/"><img src="{{ thumbnailurl }}" class="img-thumb" alt="{{title}}"></a>
         </div>
         <div class="left__block">
           <div class="title">
-            <a target="_blank" href="https://www.bol.com/nl/p/-/{{ globalid }}/"><h2>{{title}}</h2></a>
+            <a target="_blank" href="https://www.bol.com/nl/p/-/{{ globalid }}/"><h2 class="clamp">{{title}}</h2></a>
             <div class="logo">
               <img src="images/bolcom.svg" width="81">
             </div>
           </div>
-          <div class="subtitle">
+          <div class="sub-title">
             <div class="category">Categorie: {{category}}</div>
             {{#if seller}}
               <div class="seller">Verkoper: {{seller}}</div>
@@ -179,8 +194,8 @@
     </div>
   </script>
 
-  <script id="nunl-template" type="text/x-handlebars-template">
-    <div class="nunl">
+  <script id="nos-template" type="text/x-handlebars-template">
+    <div class="nos">
       <div class="tw">
         <img src="{{ images.large }}" alt="{{ description }}">
         <div class="description">
@@ -208,14 +223,15 @@
 
 <body>
   <div id="container">
-    <div id="desc" class="idleable">Switch slideshow to <div id="category"><span>Twitter bol.com</span></div></div>
+    <div id="desc" class="idleable">Wissel slideshow naar <div id="category"><span>Twitter bol.com</span></div>
+    </div>
     <select id="category-select">
       <option value="twitter">Twitter bol.com</option>
-      <option value="twitterbolcom" class="sort">Twitter bol.com employees</option>
-      <option value="bolpuntcomprice" class="sort">bol.com High prices</option>
-      <option value="bolpuntcomsales" class="sort">bol.com Populair products</option>
-      <option value="bolcomreclames" class="sort">bol.com commercials</option>
-      <option value="nunl" class="sort">Nu.nl Nu in beeld</option>
+      <option value="twitterEmployees" class="sort">Twitter bol.com employees</option>
+      <option value="price" class="sort">Bol.com High prices</option>
+      <option value="sales" class="sort">Bol.com Populair products</option>
+      <option value="reclames" class="sort">Bol.com commercials</option>
+      <option value="nos" class="sort">NOS opmerkelijk</option>
     </select>
   </div>
   <div id="mySwipe" class="swipe">
@@ -236,9 +252,9 @@
       <img src="images/bolcom_white.svg" class="svg">
     </div>
   </div>
-  <div class="backdrop nunl">
+  <div class="backdrop nos">
     <div class="tw">
-      <img src="images/nunl.svg" class="svg">
+      <img src="images/nos.svg" class="svg">
     </div>
   </div>
 </body>

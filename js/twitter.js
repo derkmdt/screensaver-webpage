@@ -46,16 +46,17 @@ String.prototype.parseURL = function () {
 };
 
 String.prototype.parseUsername = function () {
-  return this.replace(/ [@]+[A-Za-z0-9-_]+/g, function (u) {
-    var username = u.replace(' @', '');
-    return u.link('https://twitter.com/' + username).openUrlBlank();
+  return this.replace(/[@]+[A-Za-z0-9-_]+/g, function( u ) {
+    var username = u.replace("@","");
+    
+    return u.link( 'http://twitter.com/' + username ).openUrlBlank();
   });
 };
 
 String.prototype.parseHashtag = function () {
-  return this.replace(/ [#]+[A-Za-z0-9-_]+/g, function (t) {
-    var tag = t.replace(' #', '%23');
-    return t.link('https://twitter.com/search?q=' + tag).openUrlBlank();
+  return this.replace(/[#]+[A-Za-z0-9-_]+/g, function( t ) {
+    var tag = t.replace("#","%23");
+    return t.link( 'http://search.twitter.com/search?q=' + tag ).openUrlBlank();
   });
 };
 
@@ -73,6 +74,7 @@ function processTweets(data, unique) {
   var tweets = [];
   $.each(data, function (i, obj) {
     var element = obj;
+    
     if(!element.hasExternalUrl) {
       obj.text = obj.text.parseURL();
     }
@@ -80,8 +82,9 @@ function processTweets(data, unique) {
     var created = element.created.parseDate();
     delete element.created;
     var now = new Date();
+
     element.date = distanceOfTimeInWords(now, created, true) + ' geplaatst';
-    element.tweetUrl = 'https://twitter.com/-/status/' + element.tweetId;
+    element.tweetUrl = 'https://twitter.com/user/status/' + element.tweetId;
     element.retweetUrl = 'https://twitter.com/intent/retweet?tweet_id=' + element.tweetId;
     element.replyUrl = 'https://twitter.com/intent/tweet?in_reply_to=' + element.tweetId;
     element.likeUrl = 'https://twitter.com/intent/like?tweet_id=' + element.tweetId;
